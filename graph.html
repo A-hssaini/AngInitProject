@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>JavaScript Arrays</h2>
+
+<p id="demo"></p>
+
+<script>
+
+function node(){
+  this.successeurs = Array();
+}
+
+function calculCost(walk){
+  var sum = 0;
+  for (var w of walk)
+    sum += w;
+  return sum;
+}
+
+//Find a potential walk
+function searchForWalk(start, restOfStr, occurences, nodes){
+  var walk = Array();
+
+  walk.push(start);
+  for (var v of restOfStr){
+    const occ = occurences[v];
+    var notFound = 1;
+    
+    for (var o of occ){
+      if (nodes[start].successeurs.includes(o)){
+        walk.push(o);
+        start = o;
+        notFound = 0;
+        break;
+      }
+    }
+    if (notFound == 1)
+      return -1;
+  }
+  return walk;
+}
+
+//graph representation
+function generateGraph(vertices, edges){
+  
+  var i = 0;
+  var nodes = Array();
+  var occurences = {};
+
+  for (var v of vertices){
+    nodes[i] = new node();
+    if (!occurences[v]){
+      occurences[v] = Array();
+      occurences[v].push(i);
+    }
+    else occurences[v].push(i);
+  i++;
+  }
+
+  for (var e of edges){
+    nodes[e[0]].successeurs.push(e[1]);
+    nodes[e[1]].successeurs.push(e[0]);
+  }
+  return [occurences, nodes];
+}
+
+//Solution: walk 
+function findSolution(vertices, edges, string){
+  
+  const graph = generateGraph(vertices, edges);
+  minWalk = -1;
+  minCost = -1;
+
+  for (var start of graph[0][string.slice(0,1)]){
+    const walk = searchForWalk(start, string.slice(1,string.length), graph[0], graph[1]);
+    if (walk != -1){
+      cost = calculCost(walk);
+      if (cost < minCost || minCost == -1){
+        minCost = cost;
+        minWalk = walk; 
+      }
+    }
+  }
+  return minWalk;
+}
+
+const vertices = ["A", "B", "C", "D", "E", "A", "B", "C", "D", "E"]
+const edges = [[0,1],[1,2],[2,3],[3,4],[4,0],[0,5],[1,6],[2,7],[3,8],[4,9],[5,7],[5,8],[6,8],[6,9],[7,9]];
+
+const rest = findSolution(vertices, edges, "ABBECCD");
+
+document.getElementById("demo").innerHTML = rest;
+</script>
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+<li [ngClass] = "{'list-group-item ': true,
+                  'list-group-item-success' : appareilStatus === 'allumé',
+                   'list-group-item-danger' : appareilStatus === 'éteint'}">
+    <h4 [ ngStyle ] = " {color : getColor()} ">Appareil : {{ appareilName }} -- Statut : {{ appareilStatus }}</h4>
+    <!-- *ngIf directive -->
+    <div style="width:20px;height:20px;background-color:red;" 
+    *ngIf = "appareilStatus === 'éteint'"></div>
+    <!-- 2-2 Binding ngModel directive -->
+     <input type="text" class="form-control" [(ngModel)]="appareilName"> 
+  </li>
